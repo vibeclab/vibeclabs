@@ -1,0 +1,6 @@
+# Allow all search engines to index the site
+User-agent: *
+Allow: /
+
+# Sitemap location (update with your domain when deployed)
+Sitemap: https://vicebclabs.com/sitemap.xml
