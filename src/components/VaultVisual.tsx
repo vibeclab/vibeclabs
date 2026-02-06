@@ -64,8 +64,8 @@ function VectorTower() {
       positions[i * 3 + 1] = y;
       positions[i * 3 + 2] = z;
 
-      // Random velocity for vertical streaming
-      velocities[i] = Math.random() * 0.02 + 0.01;
+      // Random velocity for vertical streaming (reduced by 52%)
+      velocities[i] = Math.random() * 0.0096 + 0.0048;
 
       // 96% Emerald, 4% Light Blue
       const useBlue = Math.random() < 0.04;
@@ -87,10 +87,10 @@ function VectorTower() {
   useFrame((state) => {
     const time = state.clock.elapsedTime;
 
-    // Sweeping Crane perspective - diagonal orbit with vertical movement (cinematic framing)
-    state.camera.position.x = Math.sin(time * 0.3) * 24;
-    state.camera.position.z = Math.cos(time * 0.3) * 24;
-    state.camera.position.y = Math.sin(time * 0.1) * 7;
+    // Sweeping Crane perspective - diagonal orbit with vertical movement (cinematic framing - slowed by 40%)
+    state.camera.position.x = Math.sin(time * 0.18) * 24;
+    state.camera.position.z = Math.cos(time * 0.18) * 24;
+    state.camera.position.y = Math.sin(time * 0.06) * 7;
     state.camera.lookAt(0, 0, 0);
 
     // Animate points - vertical jitter/streaming
@@ -142,9 +142,9 @@ function VectorTower() {
       }
     }
 
-    // Slow rotation of entire tower
+    // Slow rotation of entire tower (reduced by 40% for monumental feel)
     if (pointsRef.current) {
-      pointsRef.current.rotation.y = time * 0.05;
+      pointsRef.current.rotation.y = time * 0.03;
     }
   });
 
@@ -183,7 +183,7 @@ export default function VaultVisual() {
   return (
     <div className="fixed inset-0 w-full h-screen" style={{ zIndex: 0 }}>
       <Canvas
-        camera={{ position: [24, 0, 0], fov: 60 }}
+        camera={{ position: [24, 0, 0], fov: 45 }}
         className="pointer-events-none"
       >
         <VectorTower />

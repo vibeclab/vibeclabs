@@ -7,12 +7,29 @@
   --foreground: #ffffff;
 }
 
+body {
+  font-family: var(--font-inter), sans-serif;
+}
+
+.font-display {
+  font-family: var(--font-inter), sans-serif;
+}
+
+.font-mono {
+  font-family: var(--font-ibm-plex-mono), monospace;
+}
+
 @theme inline {
   --color-primary: #020202;
   --color-accent: #00FF41;
 }
 
-body {
+html, body, main, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden !important;
+  margin: 0;
+  padding: 0;
   background: #020202;
   color: white;
   -webkit-font-smoothing: antialiased;
