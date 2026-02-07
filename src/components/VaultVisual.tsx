@@ -2,7 +2,6 @@
 
 import { useRef, useMemo, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { EffectComposer } from '@react-three/postprocessing';
 import * as THREE from 'three';
 
 function createCodeTexture() {
@@ -184,7 +183,6 @@ export default function VaultVisual() {
         className="pointer-events-none"
       >
         <VectorTower />
-        <EffectComposer />
       </Canvas>
     </div>
   );
