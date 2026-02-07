@@ -49,8 +49,8 @@ function VectorTower() {
     const shellThickness = 1.2; // Depth of the shell
 
     // Color palettes
-    const emerald = new THREE.Color('#003f33');
-    const lightBlue = new THREE.Color('#003f33');
+    const emerald = new THREE.Color('#003229');
+    const lightBlue = new THREE.Color('#003229');
 
     for (let i = 0; i < count; i++) {
       // Distribute points in a cylindrical shell
@@ -115,7 +115,7 @@ function VectorTower() {
     if (pointsRef.current && colorsRef.current && isBlueRef.current) {
       const colors = pointsRef.current.geometry.attributes.color.array as Float32Array;
       const cycleTime = time % 10; // 10-second cycle
-      const lightBlue = new THREE.Color('#003f33');
+      const lightBlue = new THREE.Color('#003229');
 
       // Pulse occurs from 0-1.5 seconds of each 10-second cycle
       if (cycleTime < 1.5) {
