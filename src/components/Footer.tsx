@@ -30,10 +30,11 @@ export default function Footer() {
         {/* Copyright */}
         <div className="text-center">
           <p className="text-gray-500 text-sm font-mono">
-            VibecLabs © 2026 // Sagarejo Regional Hub
+            VibecLabs (c) 2026 // Sagarejo Regional Hub
           </p>
         </div>
       </div>
     </footer>
   );
 }
+

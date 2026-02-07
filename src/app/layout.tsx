@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import GrainOverlay from "@/components/GrainOverlay";
@@ -16,23 +16,31 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "VibecLabs | Agentic Infrastructure & Logistics R&D",
-  description: "VibecLabs specializes in agentic infrastructure and logistics R&D, codifying 15 years of Google ecosystem integration and 4 years of longitudinal content data analysis into autonomous systems. Based in Sagarejo Regional Hub.",
-  keywords: ["agentic infrastructure", "logistics R&D", "autonomous systems", "Google ecosystem", "content data analysis", "distributed logistics", "posthumous data orchestration"],
-  authors: [{ name: "VibecLabs" }],
-  creator: "VibecLabs",
-  publisher: "VibecLabs",
+  title: "VIBECLABS - Creative Engineering & Digital Inheritance",
+  description: "An elite digital laboratory specializing in high-security data inheritance systems (THE VAULT) and automated orchestration platforms (DELIVA).",
+  keywords: ["VIBECLABS", "Creative Engineering", "Digital Inheritance", "THE VAULT", "DELIVA", "Three.js", "Next.js", "Avant-Garde UI", "Data Security Protocols"],
+  authors: [{ name: "VIBECLABS" }],
+  creator: "VIBECLABS",
+  publisher: "VIBECLABS",
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
-    title: "VibecLabs | Agentic Infrastructure & Logistics R&D",
-    description: "Codifying 15 years of Google ecosystem integration into autonomous systems.",
+    title: "VIBECLABS",
+    description: "Creative laboratory for the decoupled era. Experiments in digital longevity and multi-tier market orchestration.",
     type: "website",
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "VibecLabs | Agentic Infrastructure & Logistics R&D",
-    description: "Codifying 15 years of Google ecosystem integration into autonomous systems.",
+    title: "VIBECLABS",
+    description: "Creative laboratory for the decoupled era. Experiments in digital longevity and multi-tier market orchestration.",
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#000000",
 };
 
 export default function RootLayout({
@@ -51,3 +59,4 @@ export default function RootLayout({
     </html>
   );
 }
+

@@ -2,7 +2,7 @@
 
 import { useRef, useMemo, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { EffectComposer, Bloom } from '@react-three/postprocessing';
+import { EffectComposer } from '@react-three/postprocessing';
 import * as THREE from 'three';
 
 function createCodeTexture() {
@@ -37,7 +37,8 @@ function VectorTower() {
 
   // Create point cloud in cylindrical tower shape
   const { positions, velocities, colors, isBlue } = useMemo(() => {
-    const count = 15000; // Total particles
+    // Baseline testing for GPU overhead.
+    const count = 6500; // Total particles
     const positions = new Float32Array(count * 3);
     const velocities = new Float32Array(count);
     const colors = new Float32Array(count * 3);
@@ -48,8 +49,8 @@ function VectorTower() {
     const shellThickness = 1.2; // Depth of the shell
 
     // Color palettes
-    const emerald = new THREE.Color('#10b981');
-    const lightBlue = new THREE.Color('#60a5fa');
+    const emerald = new THREE.Color('#003f33');
+    const lightBlue = new THREE.Color('#003f33');
 
     for (let i = 0; i < count; i++) {
       // Distribute points in a cylindrical shell
@@ -114,7 +115,7 @@ function VectorTower() {
     if (pointsRef.current && colorsRef.current && isBlueRef.current) {
       const colors = pointsRef.current.geometry.attributes.color.array as Float32Array;
       const cycleTime = time % 10; // 10-second cycle
-      const lightBlue = new THREE.Color('#60a5fa');
+      const lightBlue = new THREE.Color('#003f33');
 
       // Pulse occurs from 0-1.5 seconds of each 10-second cycle
       if (cycleTime < 1.5) {
@@ -166,13 +167,13 @@ function VectorTower() {
       </bufferGeometry>
       <pointsMaterial
         ref={materialRef}
-        size={0.2}
+        size={0.4}
         map={codeTexture}
         vertexColors
-        transparent
-        opacity={0.7}
+        transparent={false}
+        opacity={1.0}
         sizeAttenuation
-        blending={THREE.AdditiveBlending}
+        blending={THREE.NormalBlending}
         depthWrite={false}
       />
     </points>
@@ -187,14 +188,7 @@ export default function VaultVisual() {
         className="pointer-events-none"
       >
         <VectorTower />
-        <EffectComposer>
-          <Bloom
-            intensity={3.0}
-            luminanceThreshold={0.05}
-            luminanceSmoothing={0.9}
-            radius={1.0}
-          />
-        </EffectComposer>
+        <EffectComposer />
       </Canvas>
     </div>
   );
