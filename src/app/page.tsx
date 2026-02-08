@@ -2,36 +2,78 @@
 
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect, Suspense } from 'react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { useState, useEffect, useLayoutEffect, Suspense, useRef } from 'react';
 
 const VaultVisual = dynamic(() => import('@/components/VaultVisual'), { ssr: false });
 
-const BlinkingCursor = () => (
-  <motion.span
-    animate={{ opacity: [1, 0] }}
-    transition={{ duration: 1, repeat: Infinity, repeatType: "reverse" }}
-    className="inline-block"
-  >
-    _
-  </motion.span>
-);
+const BlinkingCursor = () => {
+  const prefersReducedMotion = useReducedMotion();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 767px)');
+    const updateIsMobile = () => setIsMobile(mediaQuery.matches);
+    updateIsMobile();
+    mediaQuery.addEventListener('change', updateIsMobile);
+    return () => mediaQuery.removeEventListener('change', updateIsMobile);
+  }, []);
+
+  if (prefersReducedMotion || isMobile) {
+    return <span className="inline-block">_</span>;
+  }
+
+  return (
+    <motion.span
+      animate={{ opacity: [1, 0] }}
+      transition={{ duration: 1, repeat: Infinity, repeatType: "reverse" }}
+      className="inline-block"
+    >
+      _
+    </motion.span>
+  );
+};
 
 export default function Home() {
   const [isDelivaDrawerOpen, setIsDelivaDrawerOpen] = useState(false);
   const [showVaultTooltip, setShowVaultTooltip] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const logoRef = useRef<HTMLHeadingElement | null>(null);
+  const [logoWidth, setLogoWidth] = useState<number | null>(null);
 
-  useEffect(() => {
-    setMounted(true);
+  useLayoutEffect(() => {
+    let resizeObserver: ResizeObserver | null = null;
+
+    const updateLogoWidth = () => {
+      const width = logoRef.current?.getBoundingClientRect().width;
+      setLogoWidth(width ? Math.ceil(width) : null);
+    };
+
+    const init = async () => {
+      if (document.fonts?.ready) {
+        try {
+          await document.fonts.ready;
+        } catch {
+          // Ignore font readiness errors and measure anyway.
+        }
+      }
+      updateLogoWidth();
+    };
+
+    init();
+
+    if (logoRef.current && typeof ResizeObserver !== 'undefined') {
+      resizeObserver = new ResizeObserver(() => updateLogoWidth());
+      resizeObserver.observe(logoRef.current);
+    }
+
+    window.addEventListener('resize', updateLogoWidth);
+
+    return () => {
+      resizeObserver?.disconnect();
+      window.removeEventListener('resize', updateLogoWidth);
+    };
   }, []);
-
-  if (!mounted) {
-    return (
-      <div className="fixed inset-0 h-screen w-screen overflow-hidden bg-black touch-none" />
-    );
-  }
 
   return (
     <div className="fixed inset-0 h-screen w-screen overflow-hidden bg-black touch-none">
@@ -54,12 +96,16 @@ export default function Home() {
             className="text-left"
           >
             <div className="flex flex-col">
-              <h1 className="font-mono font-black tracking-tighter text-white uppercase" style={{ fontSize: '4.5rem' }}>
+              <h1
+                ref={logoRef}
+                className="font-mono font-black tracking-tighter text-white uppercase text-[44px] sm:text-[56px] md:text-[72px]"
+              >
                 VIBECLABS<BlinkingCursor />
               </h1>
               <button
                 onClick={() => setIsContactOpen(true)}
-                className="mt-[-5px] ml-2 w-full px-2 bg-white text-black font-mono text-[10px] uppercase tracking-[0.2em] border-none outline-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
+                className="mt-[-5px] ml-2 relative left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 px-2 bg-white text-black font-mono text-[10px] uppercase tracking-[0.2em] border-none outline-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
+                style={{ width: logoWidth ? `${Math.ceil(logoWidth)}px` : undefined }}
               >
                 Contact
               </button>
@@ -68,7 +114,7 @@ export default function Home() {
         </div>
 
         {/* THE VAULT - Middle of Spine */}
-        <div className="fixed top-[30vh] left-[8vw] z-20">
+        <div className="fixed top-[calc(30vh+120px)] md:top-[30vh] left-[8vw] z-20">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -79,7 +125,7 @@ export default function Home() {
               THE VAULT
             </h2>
             <p className="font-mono text-[13px] text-gray-400 tracking-tight leading-relaxed opacity-70 font-medium mb-6">
-              Highly secure data inheritance system. Uses an automated "Dead Man's Switch" trigger
+              Highly secure data inheritance system. Uses an automated &quot;Dead Man&apos;s Switch&quot; trigger
               to release encrypted content to verified recipients based on inactivity protocols.
             </p>
             <div className="space-y-2">

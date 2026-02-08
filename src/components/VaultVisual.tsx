@@ -48,14 +48,22 @@ function VectorTower() {
     const shellThickness = 1.2; // Depth of the shell
 
     // Color palettes
-    const emerald = new THREE.Color('#003229');
-    const lightBlue = new THREE.Color('#003229');
+    const emerald = new THREE.Color('#004235');
+    const lightBlue = new THREE.Color('#004235');
+
+    const rand = (() => {
+      let seed = 123456789;
+      return () => {
+        seed = (seed * 1664525 + 1013904223) % 4294967296;
+        return seed / 4294967296;
+      };
+    })();
 
     for (let i = 0; i < count; i++) {
       // Distribute points in a cylindrical shell
-      const angle = Math.random() * Math.PI * 2;
-      const y = (Math.random() - 0.5) * height;
-      const r = radius - Math.random() * shellThickness;
+      const angle = rand() * Math.PI * 2;
+      const y = (rand() - 0.5) * height;
+      const r = radius - rand() * shellThickness;
 
       const x = Math.cos(angle) * r;
       const z = Math.sin(angle) * r;
@@ -65,10 +73,10 @@ function VectorTower() {
       positions[i * 3 + 2] = z;
 
       // Random velocity for vertical streaming (reduced by 52%)
-      velocities[i] = Math.random() * 0.0096 + 0.0048;
+      velocities[i] = rand() * 0.0096 + 0.0048;
 
       // 96% Emerald, 4% Light Blue
-      const useBlue = Math.random() < 0.04;
+      const useBlue = rand() < 0.04;
       isBlue[i] = useBlue ? 1 : 0;
       const color = useBlue ? lightBlue : emerald;
 
@@ -80,9 +88,11 @@ function VectorTower() {
     return { positions, velocities, colors, isBlue };
   }, []);
 
-  velocitiesRef.current = velocities;
-  colorsRef.current = colors;
-  isBlueRef.current = isBlue;
+  useEffect(() => {
+    velocitiesRef.current = velocities;
+    colorsRef.current = colors;
+    isBlueRef.current = isBlue;
+  }, [velocities, colors, isBlue]);
 
   useFrame((state) => {
     const time = state.clock.elapsedTime;
@@ -114,7 +124,7 @@ function VectorTower() {
     if (pointsRef.current && colorsRef.current && isBlueRef.current) {
       const colors = pointsRef.current.geometry.attributes.color.array as Float32Array;
       const cycleTime = time % 10; // 10-second cycle
-      const lightBlue = new THREE.Color('#003229');
+      const lightBlue = new THREE.Color('#004235');
 
       // Pulse occurs from 0-1.5 seconds of each 10-second cycle
       if (cycleTime < 1.5) {
